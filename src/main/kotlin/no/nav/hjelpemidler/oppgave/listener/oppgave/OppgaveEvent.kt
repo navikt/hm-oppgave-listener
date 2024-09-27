@@ -23,7 +23,7 @@ data class Hendelse(val hendelsestype: String, val tidspunkt: LocalDateTime) {
 data class UtførtAv(
     val navIdent: String,
     @JsonAlias("enhetsnr")
-    val enhetsnummer: String
+    val enhetsnummer: String?
 ) {
     @JsonAnySetter
     val andreFelter: Map<String, Any?> = mutableMapOf()
