@@ -45,7 +45,7 @@ data class Oppgave(
 data class Kategorisering(
     val tema: String,
     val oppgavetype: String,
-    val behandlingstema: String,
+    val behandlingstema: String?,
     val behandlingstype: String?,
     val prioritet: Prioritet,
 ) {
