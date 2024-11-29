@@ -16,7 +16,7 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("libs") {
-            from("no.nav.hjelpemidler:katalog:24.261.093355")
+            from("no.nav.hjelpemidler:katalog:24.331.100445")
             version("kafka", "3.7.1")
         }
     }
