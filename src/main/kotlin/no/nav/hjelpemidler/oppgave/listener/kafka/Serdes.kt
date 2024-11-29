@@ -6,6 +6,7 @@ import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.common.serialization.Serdes
 
 val stringSerde: Serde<String> = Serdes.String()
+val longSerde: Serde<Long> = Serdes.Long()
 
 @Suppress("RemoveExplicitTypeArguments")
 inline fun <reified T> jsonSerde(): Serde<T> {

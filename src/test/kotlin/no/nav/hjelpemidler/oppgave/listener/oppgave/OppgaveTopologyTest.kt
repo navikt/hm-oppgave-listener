@@ -4,6 +4,7 @@ import io.kotest.matchers.shouldBe
 import no.nav.hjelpemidler.oppgave.listener.Configuration
 import no.nav.hjelpemidler.oppgave.listener.jsonMapper
 import no.nav.hjelpemidler.oppgave.listener.kafka.jsonSerde
+import no.nav.hjelpemidler.oppgave.listener.kafka.longSerde
 import no.nav.hjelpemidler.oppgave.listener.kafka.stringSerde
 import no.nav.hjelpemidler.oppgave.listener.test.asSequence
 import no.nav.hjelpemidler.oppgave.listener.test.testTopology
@@ -19,7 +20,7 @@ class OppgaveTopologyTest {
 
     private val inputTopic = driver.createInputTopic(
         Configuration.OPPGAVE_TOPIC,
-        stringSerde.serializer(),
+        longSerde.serializer(),
         oppgaveEventSerde.serializer(),
     )
     private val outputTopic = driver.createOutputTopic(
@@ -30,7 +31,7 @@ class OppgaveTopologyTest {
 
     @Test
     fun `Skal transformere melding om oppgave og sende svaret videre på rapid`() {
-        val oppgaveId = "123"
+        val oppgaveId = 123L
         val erHjelpemiddel = true
 
         inputTopic.pipeInput(
@@ -44,7 +45,7 @@ class OppgaveTopologyTest {
                     enhetsnummer = "9999",
                 ),
                 Oppgave(
-                    oppgaveId = oppgaveId,
+                    oppgaveId = oppgaveId.toString(),
                     versjon = 1,
                     tilordning = jsonMapper.createObjectNode(),
                     kategorisering = Kategorisering(
@@ -64,10 +65,10 @@ class OppgaveTopologyTest {
         )
 
         val record = outputTopic.asSequence().single()
-        record.key shouldBe oppgaveId
+        record.key shouldBe oppgaveId.toString()
 
         val value = record.value
-        value.oppgave.oppgaveId shouldBe oppgaveId
+        value.oppgave.oppgaveId shouldBe oppgaveId.toString()
         value.oppgave.erHjelpemiddel shouldBe erHjelpemiddel
     }
 }
