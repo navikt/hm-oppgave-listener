@@ -15,8 +15,8 @@ fun StreamsBuilder.oppgavehendelse() = this
         Configuration.OPPGAVE_TOPIC,
         Consumed.with(stringSerde, jsonSerde<OppgaveEvent>())
     )
-    .filter { _, oppgave -> oppgave.oppgave.erHjelpemiddel }
-    .peek { _, oppgave ->
-        log.info { "Mottok melding om oppgave: $oppgave" }
+    .filter { _, oppgaveEvent -> oppgaveEvent.oppgave.erHjelpemiddel }
+    .peek { key, oppgaveEvent ->
+        log.info { "Mottok oppgavehendelse: $oppgaveEvent, key: $key" }
     }
     .toRapid() // TODO: fjern miljø-test når vi skal sende meldinger til egen rapid

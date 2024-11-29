@@ -23,7 +23,7 @@ data class Hendelse(val hendelsestype: String, val tidspunkt: LocalDateTime) {
 data class UtførtAv(
     val navIdent: String,
     @JsonAlias("enhetsnr")
-    val enhetsnummer: String?
+    val enhetsnummer: String?,
 ) {
     @JsonAnySetter
     val andreFelter: Map<String, Any?> = mutableMapOf()
@@ -35,7 +35,7 @@ data class Oppgave(
     val tilordning: JsonNode,
     val kategorisering: Kategorisering,
     val behandlingsperiode: JsonNode,
-    val bruker: JsonNode,
+    val bruker: Bruker?,
 ) {
     val erHjelpemiddel get() = kategorisering.tema == "HJE"
     @JsonAnySetter
@@ -56,3 +56,12 @@ data class Kategorisering(
         HOY, NORMAL, LAV
     }
 }
+
+data class Bruker(
+    val ident: String,
+    val identType: String,
+) {
+    @JsonAnySetter
+    val andreFelter: Map<String, Any?> = mutableMapOf()
+}
+)
