@@ -55,7 +55,10 @@ class OppgaveTopologyTest {
                         prioritet = Kategorisering.Prioritet.NORMAL,
                     ),
                     behandlingsperiode = jsonMapper.createObjectNode(),
-                    bruker = jsonMapper.createObjectNode(),
+                    bruker = Bruker(
+                        ident = "12345678901",
+                        identType = "FOLKEREGISTERIDENT",
+                    ),
                 )
             )
         )

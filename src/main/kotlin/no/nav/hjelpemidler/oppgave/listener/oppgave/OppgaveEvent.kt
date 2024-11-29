@@ -64,4 +64,3 @@ data class Bruker(
     @JsonAnySetter
     val andreFelter: Map<String, Any?> = mutableMapOf()
 }
-)
