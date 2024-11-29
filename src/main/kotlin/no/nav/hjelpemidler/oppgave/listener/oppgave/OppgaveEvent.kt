@@ -1,8 +1,8 @@
 package no.nav.hjelpemidler.oppgave.listener.oppgave
 
 import com.fasterxml.jackson.annotation.JsonAlias
-import com.fasterxml.jackson.annotation.JsonAnySetter
-import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.annotation.JsonIgnore
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class OppgaveEvent(
@@ -10,37 +10,34 @@ data class OppgaveEvent(
     @JsonAlias("utfortAv")
     val utførtAv: UtførtAv,
     val oppgave: Oppgave,
-) {
-    @JsonAnySetter
-    val andreFelter: Map<String, Any?> = mutableMapOf()
-}
+)
 
-data class Hendelse(val hendelsestype: String, val tidspunkt: LocalDateTime) {
-    @JsonAnySetter
-    val andreFelter: Map<String, Any?> = mutableMapOf()
-}
+data class Hendelse(val hendelsestype: String, val tidspunkt: LocalDateTime)
 
 data class UtførtAv(
     val navIdent: String,
     @JsonAlias("enhetsnr")
     val enhetsnummer: String?,
-) {
-    @JsonAnySetter
-    val andreFelter: Map<String, Any?> = mutableMapOf()
-}
+)
 
 data class Oppgave(
     val oppgaveId: String,
     val versjon: Int,
-    val tilordning: JsonNode,
+    val tilordning: Tilordning?,
     val kategorisering: Kategorisering,
-    val behandlingsperiode: JsonNode,
+    val behandlingsperiode: Behandlingsperiode?,
     val bruker: Bruker?,
 ) {
+    @get:JsonIgnore
     val erHjelpemiddel get() = kategorisering.tema == "HJE"
-    @JsonAnySetter
-    val andreFelter: Map<String, Any?> = mutableMapOf()
 }
+
+data class Tilordning(
+    @JsonAlias("enhetsnr")
+    val enhetsnummer: String?,
+    val enhetsmappeId: String?,
+    val navIdent: String?,
+)
 
 data class Kategorisering(
     val tema: String,
@@ -49,18 +46,21 @@ data class Kategorisering(
     val behandlingstype: String?,
     val prioritet: Prioritet,
 ) {
-    @JsonAnySetter
-    val andreFelter: Map<String, Any?> = mutableMapOf()
-
     enum class Prioritet {
         HOY, NORMAL, LAV
     }
 }
 
+data class Behandlingsperiode(
+    val aktiv: LocalDate,
+    val frist: LocalDate,
+)
+
 data class Bruker(
     val ident: String,
-    val identType: String,
+    val identType: IdentType,
 ) {
-    @JsonAnySetter
-    val andreFelter: Map<String, Any?> = mutableMapOf()
+    enum class IdentType {
+        FOLKEREGISTERIDENT, NPID, ORGNR, SAMHANDLERNR
+    }
 }

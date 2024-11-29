@@ -47,7 +47,11 @@ class OppgaveTopologyTest {
                 Oppgave(
                     oppgaveId = oppgaveId.toString(),
                     versjon = 1,
-                    tilordning = jsonMapper.createObjectNode(),
+                    tilordning = Tilordning(
+                        enhetsnummer = "9999",
+                        enhetsmappeId = "9999",
+                        navIdent = "Z999999",
+                    ),
                     kategorisering = Kategorisering(
                         tema = "HJE",
                         oppgavetype = "OPP",
@@ -55,10 +59,13 @@ class OppgaveTopologyTest {
                         behandlingstype = "HJE",
                         prioritet = Kategorisering.Prioritet.NORMAL,
                     ),
-                    behandlingsperiode = jsonMapper.createObjectNode(),
+                    behandlingsperiode = Behandlingsperiode(
+                        aktiv = java.time.LocalDate.of(2024, 9, 20),
+                        frist = java.time.LocalDate.of(2024, 9, 27),
+                    ),
                     bruker = Bruker(
                         ident = "12345678901",
-                        identType = "FOLKEREGISTERIDENT",
+                        identType = Bruker.IdentType.FOLKEREGISTERIDENT,
                     ),
                 )
             )
