@@ -72,7 +72,7 @@ data class Kategorisering(
 
 data class Behandlingsperiode(
     val aktiv: LocalDate,
-    val frist: LocalDate,
+    val frist: LocalDate?,
 )
 
 data class Bruker(
