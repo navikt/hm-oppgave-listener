@@ -36,11 +36,11 @@ spec:
   secureLogs:
     enabled: true
   env:
-     - name: HTTP_PORT
-       value: "8080"
-     - name: KAFKA_APPLICATION_ID
-       value: "hm-oppgave-listener-v1"
-     - name: KAFKA_RAPID_TOPIC
-       value: "teamdigihot.hm-soknadsbehandling-v1"
-     - name: OPPGAVE_TOPIC
-       value: "oppgavehandtering.oppgavehendelse-v1"
+    - name: HTTP_PORT
+      value: "8080"
+    - name: KAFKA_APPLICATION_ID
+      value: "hm-oppgave-listener-v1"
+    - name: KAFKA_RAPID_TOPIC
+      value: "teamdigihot.hm-soknadsbehandling-v1"
+    - name: OPPGAVE_TOPIC
+      value: "oppgavehandtering.oppgavehendelse-v1"

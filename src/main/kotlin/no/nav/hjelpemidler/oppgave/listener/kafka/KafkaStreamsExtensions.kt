@@ -19,7 +19,7 @@ fun kafkaStreams(
 infix fun <K, V> K.withValue(value: V): KeyValue<K, V> = KeyValue.pair(this, value)
 
 inline fun <reified T> KStream<String, T>.toRapid() {
-    if (Environment.current.isLocal) { // TODO: fjernes når meldinger skal videresendes til egen rapid (i første omgang vil vi bare logge ut det vi leser fra oppgave-topicet)
+    if (!Environment.current.isProd) { // TODO: fjernes ved prodsetting
         to(Configuration.KAFKA_RAPID_TOPIC, Produced.with(stringSerde, jsonSerde<T>()))
     }
 }

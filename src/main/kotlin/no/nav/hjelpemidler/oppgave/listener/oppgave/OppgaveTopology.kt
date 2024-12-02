@@ -13,11 +13,12 @@ private val log = KotlinLogging.logger {}
 fun StreamsBuilder.oppgavehendelse() = this
     .stream(
         Configuration.OPPGAVE_TOPIC,
-        Consumed.with(longSerde, jsonSerde<OppgaveEvent>())
+        Consumed.with(longSerde, jsonSerde<InnkommendeOppgaveEvent>())
     )
     .filter { _, oppgaveEvent -> oppgaveEvent.oppgave.erHjelpemiddel }
     .peek { key, oppgaveEvent ->
         log.info { "Mottok oppgavehendelse: $oppgaveEvent, key: $key" }
     }
     .selectKey { oppgaveId, _ -> oppgaveId.toString() }
+    .mapValues(::UtgåendeOppgaveEvent)
     .toRapid() // TODO: fjern miljø-test når vi skal sende meldinger til egen rapid

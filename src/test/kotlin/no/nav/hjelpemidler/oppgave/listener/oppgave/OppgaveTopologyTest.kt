@@ -2,17 +2,18 @@ package no.nav.hjelpemidler.oppgave.listener.oppgave
 
 import io.kotest.matchers.shouldBe
 import no.nav.hjelpemidler.oppgave.listener.Configuration
-import no.nav.hjelpemidler.oppgave.listener.jsonMapper
 import no.nav.hjelpemidler.oppgave.listener.kafka.jsonSerde
 import no.nav.hjelpemidler.oppgave.listener.kafka.longSerde
 import no.nav.hjelpemidler.oppgave.listener.kafka.stringSerde
 import no.nav.hjelpemidler.oppgave.listener.test.asSequence
 import no.nav.hjelpemidler.oppgave.listener.test.testTopology
+import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.test.Test
 
 class OppgaveTopologyTest {
-    private val oppgaveEventSerde = jsonSerde<OppgaveEvent>()
+    private val innkommendeOppgaveEventSerde = jsonSerde<InnkommendeOppgaveEvent>()
+    private val utgåendeOppgaveEventSerde = jsonSerde<UtgåendeOppgaveEvent>()
 
     private val driver = testTopology {
         oppgavehendelse()
@@ -21,12 +22,12 @@ class OppgaveTopologyTest {
     private val inputTopic = driver.createInputTopic(
         Configuration.OPPGAVE_TOPIC,
         longSerde.serializer(),
-        oppgaveEventSerde.serializer(),
+        innkommendeOppgaveEventSerde.serializer(),
     )
     private val outputTopic = driver.createOutputTopic(
         Configuration.KAFKA_RAPID_TOPIC,
         stringSerde.deserializer(),
-        oppgaveEventSerde.deserializer(),
+        utgåendeOppgaveEventSerde.deserializer(),
     )
 
     @Test
@@ -35,7 +36,7 @@ class OppgaveTopologyTest {
         val erHjelpemiddel = true
 
         inputTopic.pipeInput(
-            oppgaveId, OppgaveEvent(
+            oppgaveId, InnkommendeOppgaveEvent(
                 hendelse = Hendelse(
                     hendelsestype = "OPPRETTET",
                     tidspunkt = LocalDateTime.of(2024, 9,20, 10, 0,0),
@@ -60,8 +61,8 @@ class OppgaveTopologyTest {
                         prioritet = Kategorisering.Prioritet.NORMAL,
                     ),
                     behandlingsperiode = Behandlingsperiode(
-                        aktiv = java.time.LocalDate.of(2024, 9, 20),
-                        frist = java.time.LocalDate.of(2024, 9, 27),
+                        aktiv = LocalDate.of(2024, 9, 20),
+                        frist = LocalDate.of(2024, 9, 27),
                     ),
                     bruker = Bruker(
                         ident = "12345678901",

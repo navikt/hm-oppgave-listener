@@ -2,15 +2,34 @@ package no.nav.hjelpemidler.oppgave.listener.oppgave
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonIgnore
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.UUID
 
-data class OppgaveEvent(
+data class InnkommendeOppgaveEvent(
     val hendelse: Hendelse,
     @JsonAlias("utfortAv")
     val utførtAv: UtførtAv,
     val oppgave: Oppgave,
 )
+
+data class UtgåendeOppgaveEvent(
+    val hendelse: Hendelse,
+    @JsonAlias("utfortAv")
+    val utførtAv: UtførtAv,
+    val oppgave: Oppgave,
+    val eventId: UUID = UUID.randomUUID(),
+    val opprettet: Instant = Instant.now(),
+) {
+    val eventName: String = "hm-oppgave-event"
+
+    constructor(innkommendeOppgaveEvent: InnkommendeOppgaveEvent) : this(
+        hendelse = innkommendeOppgaveEvent.hendelse,
+        utførtAv = innkommendeOppgaveEvent.utførtAv,
+        oppgave = innkommendeOppgaveEvent.oppgave,
+    )
+}
 
 data class Hendelse(val hendelsestype: String, val tidspunkt: LocalDateTime)
 
