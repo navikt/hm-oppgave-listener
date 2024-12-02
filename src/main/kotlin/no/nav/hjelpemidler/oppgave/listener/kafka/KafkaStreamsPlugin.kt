@@ -30,12 +30,12 @@ val KafkaStreamsPlugin = createApplicationPlugin("KafkaStreamsPlugin", ::KafkaSt
     val started: EventHandler<Application> = { _ ->
         kafkaStreams.cleanUp()
         kafkaStreams.start()
-        log.info { "Kafka Streams startet" }
+        tempLog.info { "Kafka Streams startet" }
     }
     var stopped: EventHandler<Application> = {}
     stopped = { _ ->
         kafkaStreams.close()
-        log.info { "Kafka Streams stoppet" }
+        tempLog.info { "Kafka Streams stoppet" }
         application.environment.monitor.unsubscribe(ApplicationStarted, started)
         application.environment.monitor.unsubscribe(ApplicationStopped, stopped)
     }
@@ -45,8 +45,8 @@ val KafkaStreamsPlugin = createApplicationPlugin("KafkaStreamsPlugin", ::KafkaSt
 
     onCall { _ ->
         when (val state = kafkaStreams.state()) {
-            State.RUNNING -> log.debug { "state: $state" }
-            else -> log.info { "state: $state" }
+            State.RUNNING -> tempLog.debug { "state: $state" }
+            else -> tempLog.info { "state: $state" }
         }
     }
 }
