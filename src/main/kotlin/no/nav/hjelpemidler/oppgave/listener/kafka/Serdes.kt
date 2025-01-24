@@ -1,7 +1,7 @@
 package no.nav.hjelpemidler.oppgave.listener.kafka
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import no.nav.hjelpemidler.oppgave.listener.jsonMapper
+import no.nav.hjelpemidler.serialization.jackson.jsonMapper
 import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.common.serialization.Serdes
 

@@ -1,7 +1,7 @@
 package no.nav.hjelpemidler.oppgave.listener.kafka
 
 import io.kotest.matchers.shouldBe
-import no.nav.hjelpemidler.oppgave.listener.jsonMapper
+import no.nav.hjelpemidler.serialization.jackson.jsonMapper
 import kotlin.test.Test
 
 class SerdesTest {

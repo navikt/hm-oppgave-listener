@@ -5,17 +5,19 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.kotlin.stdlib)
+    // hotlibs
+    implementation(platform(libs.hotlibs.platform))
+    implementation(libs.hotlibs.core)
+    implementation(libs.hotlibs.logging)
+    implementation(libs.hotlibs.serialization)
+
     implementation(libs.nocommons)
 
     // Kafka
     implementation(libs.kafka.streams)
-    implementation(libs.kafka.streams.avro.serde)
-    constraints {
-        implementation(libs.commons.compress)
-    }
 
     // Ktor
+    implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.metrics.micrometer)
 
@@ -30,7 +32,8 @@ dependencies {
     implementation(libs.hm.contract.pdl.avro)
 
     // Logging
-    implementation(libs.hotlibs.logging)
+    implementation(libs.kotlin.logging)
+    runtimeOnly(libs.bundles.logging.runtime)
 
     // Test
     testImplementation(libs.bundles.test)
@@ -39,8 +42,24 @@ dependencies {
     testImplementation(libs.jackson.dataformat.yaml)
 }
 
-kotlin { jvmToolchain(21) }
+java { toolchain { languageVersion.set(JavaLanguageVersion.of(21)) } }
 
-tasks.test { useJUnitPlatform() }
+@Suppress("UnstableApiUsage")
+testing {
+    suites {
+        val test by getting(JvmTestSuite::class) {
+            useKotlinTest(libs.versions.kotlin.asProvider())
+            dependencies {
+                implementation(libs.handlebars)
+                implementation(libs.hotlibs.test)
+                implementation(libs.jackson.dataformat.yaml)
+                implementation(libs.kafka.streams.test.utils)
+                implementation(libs.kotest.assertions.json)
+                implementation(libs.ktor.server.test.host)
+                implementation(libs.nimbus.jose.jwt)
+            }
+        }
+    }
+}
 
 application { mainClass.set("no.nav.hjelpemidler.oppgave.listener.ApplicationKt") }

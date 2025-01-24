@@ -21,7 +21,7 @@ val KafkaStreamsPlugin = createApplicationPlugin("KafkaStreamsPlugin", ::KafkaSt
     val kafkaStreams = pluginConfig.kafkaStreams
 
     kafkaStreams.setStateListener { newState, oldState ->
-        application.environment.monitor.raise(
+        application.monitor.raise(
             KafkaStreamsStateTransitionEvent,
             KafkaStreamsStateTransition(newState, oldState),
         )
@@ -36,8 +36,8 @@ val KafkaStreamsPlugin = createApplicationPlugin("KafkaStreamsPlugin", ::KafkaSt
     stopped = { _ ->
         kafkaStreams.close()
         log.info { "Kafka Streams stoppet" }
-        application.environment.monitor.unsubscribe(ApplicationStarted, started)
-        application.environment.monitor.unsubscribe(ApplicationStopped, stopped)
+        application.monitor.unsubscribe(ApplicationStarted, started)
+        application.monitor.unsubscribe(ApplicationStopped, stopped)
     }
 
     on(MonitoringEvent(ApplicationStarted), started)
