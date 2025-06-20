@@ -30,8 +30,7 @@ dependencies {
     implementation(libs.hm.contract.pdl.avro)
 
     // Logging
-    implementation(libs.kotlin.logging)
-    runtimeOnly(libs.bundles.logging.runtime)
+    implementation(libs.hotlibs.logging)
 
     // Test
     testImplementation(libs.bundles.test)
