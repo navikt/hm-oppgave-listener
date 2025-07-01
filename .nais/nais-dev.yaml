@@ -47,3 +47,5 @@ spec:
       value: "teamdigihot.hm-soknadsbehandling-v1"
     - name: OPPGAVE_TOPIC
       value: "oppgavehandtering.oppgavehendelse-v1"
+    - name: ROOT_LOG_LEVEL
+      value: DEBUG
