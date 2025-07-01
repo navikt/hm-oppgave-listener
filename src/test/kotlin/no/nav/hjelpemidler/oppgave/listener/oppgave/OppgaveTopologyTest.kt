@@ -2,11 +2,11 @@ package no.nav.hjelpemidler.oppgave.listener.oppgave
 
 import io.kotest.matchers.shouldBe
 import no.nav.hjelpemidler.oppgave.listener.Configuration
-import no.nav.hjelpemidler.oppgave.listener.kafka.jsonSerde
-import no.nav.hjelpemidler.oppgave.listener.kafka.longSerde
-import no.nav.hjelpemidler.oppgave.listener.kafka.stringSerde
 import no.nav.hjelpemidler.oppgave.listener.test.asSequence
 import no.nav.hjelpemidler.oppgave.listener.test.testTopology
+import no.nav.hjelpemidler.streams.jsonSerde
+import no.nav.hjelpemidler.streams.longSerde
+import no.nav.hjelpemidler.streams.stringSerde
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.test.Test
@@ -39,7 +39,7 @@ class OppgaveTopologyTest {
             oppgaveId, InnkommendeOppgaveEvent(
                 hendelse = Hendelse(
                     hendelsestype = "OPPRETTET",
-                    tidspunkt = LocalDateTime.of(2024, 9,20, 10, 0,0),
+                    tidspunkt = LocalDateTime.of(2024, 9, 20, 10, 0, 0),
                 ),
                 utførtAv = UtførtAv(
                     navIdent = "Z999999",
@@ -77,6 +77,6 @@ class OppgaveTopologyTest {
 
         val value = record.value
         value.oppgave.oppgaveId shouldBe oppgaveId.toString()
-        value.oppgave.erHjelpemiddel shouldBe erHjelpemiddel
+        value.oppgave.harTemaHjelpemidler shouldBe erHjelpemiddel
     }
 }

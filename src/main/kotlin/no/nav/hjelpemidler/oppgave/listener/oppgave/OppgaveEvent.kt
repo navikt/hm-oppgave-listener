@@ -9,14 +9,14 @@ import java.util.UUID
 
 data class InnkommendeOppgaveEvent(
     val hendelse: Hendelse,
-    @JsonAlias("utfortAv")
+    @param:JsonAlias("utfortAv")
     val utførtAv: UtførtAv,
     val oppgave: Oppgave,
 )
 
 data class UtgåendeOppgaveEvent(
     val hendelse: Hendelse,
-    @JsonAlias("utfortAv")
+    @param:JsonAlias("utfortAv")
     val utførtAv: UtførtAv,
     val oppgave: Oppgave,
     val eventId: UUID = UUID.randomUUID(),
@@ -35,7 +35,7 @@ data class Hendelse(val hendelsestype: String, val tidspunkt: LocalDateTime)
 
 data class UtførtAv(
     val navIdent: String,
-    @JsonAlias("enhetsnr")
+    @param:JsonAlias("enhetsnr")
     val enhetsnummer: String?,
 )
 
@@ -48,11 +48,11 @@ data class Oppgave(
     val bruker: Bruker?,
 ) {
     @get:JsonIgnore
-    val erHjelpemiddel get() = kategorisering.tema == "HJE"
+    val harTemaHjelpemidler get() = kategorisering.tema == "HJE"
 }
 
 data class Tilordning(
-    @JsonAlias("enhetsnr")
+    @param:JsonAlias("enhetsnr")
     val enhetsnummer: String?,
     val enhetsmappeId: String?,
     val navIdent: String?,
@@ -66,7 +66,10 @@ data class Kategorisering(
     val prioritet: Prioritet,
 ) {
     enum class Prioritet {
-        HOY, NORMAL, LAV
+        @JsonAlias("HOY")
+        HØY,
+        NORMAL,
+        LAV,
     }
 }
 
@@ -80,6 +83,9 @@ data class Bruker(
     val identType: IdentType,
 ) {
     enum class IdentType {
-        FOLKEREGISTERIDENT, NPID, ORGNR, SAMHANDLERNR
+        FOLKEREGISTERIDENT,
+        NPID,
+        ORGNR,
+        SAMHANDLERNR,
     }
 }
