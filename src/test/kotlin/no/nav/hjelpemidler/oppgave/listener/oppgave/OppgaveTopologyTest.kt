@@ -4,9 +4,8 @@ import io.kotest.matchers.shouldBe
 import no.nav.hjelpemidler.oppgave.listener.Configuration
 import no.nav.hjelpemidler.oppgave.listener.test.asSequence
 import no.nav.hjelpemidler.oppgave.listener.test.testTopology
-import no.nav.hjelpemidler.streams.jsonSerde
-import no.nav.hjelpemidler.streams.longSerde
-import no.nav.hjelpemidler.streams.stringSerde
+import no.nav.hjelpemidler.streams.serialization.jsonSerde
+import no.nav.hjelpemidler.streams.serialization.serde
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.test.Test
@@ -21,12 +20,12 @@ class OppgaveTopologyTest {
 
     private val inputTopic = driver.createInputTopic(
         Configuration.OPPGAVE_TOPIC,
-        longSerde.serializer(),
+        serde<Long>().serializer(),
         innkommendeOppgaveEventSerde.serializer(),
     )
     private val outputTopic = driver.createOutputTopic(
         Configuration.KAFKA_RAPID_TOPIC,
-        stringSerde.deserializer(),
+        serde<String>().deserializer(),
         utgåendeOppgaveEventSerde.deserializer(),
     )
 

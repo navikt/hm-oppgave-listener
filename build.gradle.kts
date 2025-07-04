@@ -8,13 +8,7 @@ dependencies {
     // hotlibs
     implementation(platform(libs.hotlibs.platform))
     implementation(libs.hotlibs.streams)
-
-    // Ktor
     implementation(libs.ktor.server.netty)
-    implementation(libs.ktor.server.metrics.micrometer)
-
-    // Metrics
-    implementation(libs.micrometer.registry.prometheus)
 }
 
 java { toolchain { languageVersion.set(JavaLanguageVersion.of(21)) } }
