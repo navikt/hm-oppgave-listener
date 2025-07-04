@@ -2,6 +2,8 @@ package no.nav.hjelpemidler.oppgave.listener.oppgave
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonIgnore
+import no.nav.hjelpemidler.kafka.KafkaEvent
+import no.nav.hjelpemidler.kafka.KafkaMessage
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -14,16 +16,15 @@ data class InnkommendeOppgaveEvent(
     val oppgave: Oppgave,
 )
 
+@KafkaEvent("hm-oppgave-event")
 data class UtgåendeOppgaveEvent(
     val hendelse: Hendelse,
     @param:JsonAlias("utfortAv")
     val utførtAv: UtførtAv,
     val oppgave: Oppgave,
-    val eventId: UUID = UUID.randomUUID(),
     val opprettet: Instant = Instant.now(),
-) {
-    val eventName: String = "hm-oppgave-event"
-
+    override val eventId: UUID = UUID.randomUUID(),
+) : KafkaMessage {
     constructor(innkommendeOppgaveEvent: InnkommendeOppgaveEvent) : this(
         hendelse = innkommendeOppgaveEvent.hendelse,
         utførtAv = innkommendeOppgaveEvent.utførtAv,
