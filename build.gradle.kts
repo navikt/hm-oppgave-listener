@@ -8,7 +8,7 @@ dependencies {
     // hotlibs
     implementation(platform(libs.hotlibs.platform))
     implementation(libs.hotlibs.streams)
-    implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.sse)
 }
 
 java { toolchain { languageVersion.set(JavaLanguageVersion.of(21)) } }
