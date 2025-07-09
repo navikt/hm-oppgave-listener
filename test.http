@@ -1,0 +1,3 @@
+###
+GET http://localhost:7180/events
+Accept: text/event-stream

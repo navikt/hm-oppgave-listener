@@ -1,6 +1,9 @@
 package no.nav.hjelpemidler.oppgave.listener.oppgave
 
 import io.kotest.matchers.shouldBe
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.Job
 import no.nav.hjelpemidler.oppgave.listener.Configuration
 import no.nav.hjelpemidler.oppgave.listener.test.asSequence
 import no.nav.hjelpemidler.oppgave.listener.test.testTopology
@@ -15,7 +18,9 @@ class OppgaveTopologyTest {
     private val utgåendeOppgaveEventSerde = jsonSerde<UtgåendeOppgaveEvent>()
 
     private val driver = testTopology {
-        oppgavehendelse()
+        oppgavehendelse(mockk {
+            every { publish("hm-oppgave-event", any()) } returns Job()
+        })
     }
 
     private val inputTopic = driver.createInputTopic(

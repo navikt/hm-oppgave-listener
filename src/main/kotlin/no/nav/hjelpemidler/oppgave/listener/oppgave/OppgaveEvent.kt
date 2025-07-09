@@ -16,7 +16,7 @@ data class InnkommendeOppgaveEvent(
     val oppgave: Oppgave,
 )
 
-@KafkaEvent("hm-oppgave-event")
+@KafkaEvent(UtgåendeOppgaveEvent.EVENT_NAME)
 data class UtgåendeOppgaveEvent(
     val hendelse: Hendelse,
     @param:JsonAlias("utfortAv")
@@ -30,6 +30,10 @@ data class UtgåendeOppgaveEvent(
         utførtAv = innkommendeOppgaveEvent.utførtAv,
         oppgave = innkommendeOppgaveEvent.oppgave,
     )
+
+    companion object {
+        const val EVENT_NAME = "hm-oppgave-event"
+    }
 }
 
 data class Hendelse(val hendelsestype: String, val tidspunkt: LocalDateTime)

@@ -8,6 +8,7 @@ dependencies {
     // hotlibs
     implementation(platform(libs.hotlibs.platform))
     implementation(libs.hotlibs.streams)
+    implementation(libs.valkey)
     implementation(libs.ktor.server.sse)
 }
 
