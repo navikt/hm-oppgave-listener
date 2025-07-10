@@ -10,6 +10,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
@@ -68,28 +69,25 @@ class MessageBroker(
         callbackFlow {
             val listener = object : JedisPubSub() {
                 override fun onMessage(channel: String, message: String) {
-                    trySend(message)
+                    trySendBlocking(message)
                 }
             }
 
-            var jedis: Jedis? = null
-            val job = launch(dispatcher) {
+            lateinit var jedis: Jedis
+            launch(dispatcher) {
                 jedis = jedisPool.resource
                 try {
-                    jedis?.subscribe(listener, eventName)
+                    jedis.subscribe(listener, eventName)
                 } catch (e: Exception) {
                     close(e)
                 }
             }
 
             awaitClose {
-                try {
-                    listener.unsubscribe()
-                    jedis?.close()
-                    job.cancel()
-                } catch (e: Exception) {
-                    log.error(e) { "awaitClose() failed" }
+                if (listener.isSubscribed) {
+                    listener.unsubscribe(eventName)
                 }
+                jedis.close()
             }
         }
 
