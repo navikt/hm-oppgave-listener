@@ -83,9 +83,13 @@ class MessageBroker(
             }
 
             awaitClose {
-                listener.unsubscribe()
-                jedis?.close()
-                job.cancel()
+                try {
+                    listener.unsubscribe()
+                    jedis?.close()
+                    job.cancel()
+                } catch (e: Exception) {
+                    log.error(e) { "awaitClose() failed" }
+                }
             }
         }
 
