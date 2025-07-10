@@ -2,7 +2,8 @@ package no.nav.hjelpemidler.oppgave.listener
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.utils.io.core.Closeable
-import io.valkey.Jedis
+import io.valkey.DefaultJedisClientConfig
+import io.valkey.HostAndPort
 import io.valkey.JedisPool
 import io.valkey.JedisPubSub
 import kotlinx.coroutines.CoroutineScope
@@ -33,11 +34,13 @@ class MessageBroker(
 ) : MessagePublisher, MessageSubscriber, Closeable {
     constructor(valkeyConfiguration: ValkeyConfiguration) : this(
         JedisPool(
-            valkeyConfiguration.host,
-            valkeyConfiguration.port,
-            valkeyConfiguration.username,
-            valkeyConfiguration.password,
-        )
+            HostAndPort(valkeyConfiguration.host, valkeyConfiguration.port),
+            DefaultJedisClientConfig.builder()
+                .user(valkeyConfiguration.username)
+                .password(valkeyConfiguration.password)
+                .ssl(valkeyConfiguration.tls)
+                .build(),
+        ),
     )
 
     private val dispatcher = Executors.newVirtualThreadPerTaskExecutor().asCoroutineDispatcher()
@@ -73,9 +76,8 @@ class MessageBroker(
                 }
             }
 
-            lateinit var jedis: Jedis
+            val jedis = jedisPool.resource
             launch(dispatcher) {
-                jedis = jedisPool.resource
                 try {
                     jedis.subscribe(listener, eventName)
                 } catch (e: Exception) {
@@ -84,9 +86,7 @@ class MessageBroker(
             }
 
             awaitClose {
-                if (listener.isSubscribed) {
-                    listener.unsubscribe(eventName)
-                }
+                listener.unsubscribe()
                 jedis.close()
             }
         }
