@@ -37,6 +37,9 @@ spec:
       cpu: 30m
       memory: 512Mi
   accessPolicy:
+    inbound:
+      rules:
+        - application: hotsak-frontend
     outbound:
       rules:
         - application: logging

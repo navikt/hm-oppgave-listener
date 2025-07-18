@@ -2,7 +2,7 @@ package no.nav.hjelpemidler.oppgave.listener.oppgave
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import no.nav.hjelpemidler.oppgave.listener.Configuration
-import no.nav.hjelpemidler.oppgave.listener.MessagePublisher
+import no.nav.hjelpemidler.oppgave.listener.broker.MessageBroker
 import no.nav.hjelpemidler.streams.serialization.jsonSerde
 import no.nav.hjelpemidler.streams.serialization.serde
 import no.nav.hjelpemidler.streams.toRapid
@@ -13,7 +13,7 @@ import java.time.Instant
 
 private val log = KotlinLogging.logger {}
 
-fun StreamsBuilder.oppgavehendelse(broker: MessagePublisher) = this
+fun StreamsBuilder.oppgavehendelse(broker: MessageBroker) = this
     .stream(
         Configuration.OPPGAVE_TOPIC,
         Consumed.with(serde<Long>(), jsonSerde<InnkommendeOppgaveEvent>())

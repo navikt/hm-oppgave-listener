@@ -20,8 +20,9 @@ testing {
         val test by getting(JvmTestSuite::class) {
             useKotlinTest(libs.versions.kotlin.asProvider())
             dependencies {
-                implementation(libs.handlebars)
                 implementation(libs.hotlibs.test)
+
+                implementation(libs.handlebars)
                 implementation(libs.jackson.dataformat.yaml)
                 implementation(libs.kafka.streams.test.utils)
                 implementation(libs.kotest.assertions.json)
