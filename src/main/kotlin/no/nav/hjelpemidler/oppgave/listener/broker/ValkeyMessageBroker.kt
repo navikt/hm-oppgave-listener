@@ -60,7 +60,12 @@ class ValkeyMessageBroker private constructor(private val jedisPool: JedisPool) 
         callbackFlow {
             val listener = object : JedisPubSub() {
                 override fun onMessage(channel: String, message: String) {
+                    log.debug { "onMessage('$channel', message: '$message')" }
                     trySend(message)
+                }
+
+                override fun onUnsubscribe(channel: String?, subscribedChannels: Int) {
+                    log.debug { "onUnsubscribe('$channel', subscribedChannels: $subscribedChannels)" }
                 }
             }
 
@@ -74,7 +79,7 @@ class ValkeyMessageBroker private constructor(private val jedisPool: JedisPool) 
             }
 
             awaitClose {
-                log.info { "Subscription ended, eventName: $eventName" }
+                log.debug { "awaitClose()" }
                 if (listener.isSubscribed) listener.unsubscribe()
                 jedis.close()
                 job.cancel()
@@ -84,8 +89,8 @@ class ValkeyMessageBroker private constructor(private val jedisPool: JedisPool) 
     override fun close() {
         log.info { "Shutting down ValkeyMessageBroker" }
         try {
-            scope.cancel()
             jedisPool.close()
+            scope.cancel()
         } catch (_: Exception) {
         }
     }
