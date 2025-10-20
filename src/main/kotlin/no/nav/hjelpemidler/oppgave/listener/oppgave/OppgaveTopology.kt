@@ -1,6 +1,7 @@
 package no.nav.hjelpemidler.oppgave.listener.oppgave
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import no.nav.hjelpemidler.configuration.Environment
 import no.nav.hjelpemidler.oppgave.listener.Configuration
 import no.nav.hjelpemidler.oppgave.listener.broker.MessageBroker
 import no.nav.hjelpemidler.streams.serialization.jsonSerde
@@ -20,7 +21,9 @@ fun StreamsBuilder.oppgavehendelse(broker: MessageBroker) = this
     )
     .filter { _, oppgaveEvent -> oppgaveEvent.oppgave.harTemaHjelpemidler }
     .peek { key, oppgaveEvent ->
-        log.debug { "Mottok oppgavehendelse: $oppgaveEvent, key: $key" }
+        if (Environment.current.isDev) {
+            log.debug { "Mottok oppgavehendelse: $oppgaveEvent, key: $key" }
+        }
     }
     .selectKey { oppgaveId, _ -> oppgaveId.toString() }
     .mapValues(::UtgåendeOppgaveEvent)
