@@ -1,6 +1,5 @@
 package no.nav.hjelpemidler.oppgave.listener.oppgave
 
-import no.nav.hjelpemidler.serialization.jackson.toJson
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -39,7 +38,3 @@ fun lagInnkommendeOppgaveEvent(oppgaveId: Long = 1): InnkommendeOppgaveEvent =
             ),
         )
     )
-
-fun main() {
-    lagInnkommendeOppgaveEvent().toJson(false).let(::println)
-}

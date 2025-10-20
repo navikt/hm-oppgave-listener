@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import no.nav.hjelpemidler.configuration.ValkeyConfiguration
-import no.nav.hjelpemidler.serialization.jackson.toJson
+import no.nav.hjelpemidler.serialization.jackson.valueToJson
 
 interface MessageBroker : Closeable {
     fun publish(eventName: String, payload: Any): Job
@@ -49,7 +49,7 @@ class ValkeyMessageBroker private constructor(private val jedisPool: JedisPool) 
         scope.launch {
             try {
                 jedisPool.resource.use { jedis ->
-                    jedis.publish(eventName, payload.toJson())
+                    jedis.publish(eventName, valueToJson(payload))
                 }
             } catch (e: Exception) {
                 log.error(e) { "Publish failed, eventName: $eventName" }
