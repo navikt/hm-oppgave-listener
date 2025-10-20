@@ -27,9 +27,11 @@ fun StreamsBuilder.oppgavehendelse(broker: MessageBroker) = this
     }
     .selectKey { oppgaveId, _ -> oppgaveId.toString() }
     .mapValues(::UtgåendeOppgaveEvent)
+    /*
     .peek { _, oppgaveEvent ->
         broker.publish(oppgaveEvent.eventName, UtgåendeOppgaveServerSentEvent(oppgaveEvent))
     }
+    */
     .toRapid<String, UtgåendeOppgaveEvent>()
 
 data class UtgåendeOppgaveServerSentEvent(
