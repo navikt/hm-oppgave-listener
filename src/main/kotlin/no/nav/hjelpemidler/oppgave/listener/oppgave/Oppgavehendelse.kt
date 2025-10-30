@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonIgnore
+import no.nav.hjelpemidler.domain.enhet.Enhetsnummer
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -16,9 +17,15 @@ data class Hendelse(
 )
 
 data class UtførtAv(
-    val navIdent: String,
+    /**
+     * NavIdent eller system.
+     *
+     * e.g. "A123456" eller "hm-oppgave-sink"
+     */
+    @param:JsonAlias("navIdent")
+    val ident: String,
     @param:JsonAlias("enhetsnr")
-    val enhetsnummer: String?,
+    val enhetsnummer: Enhetsnummer?,
     @field:JsonAnyGetter
     @field:JsonAnySetter
     val andreFelter: MutableMap<String, Any?> = mutableMapOf(),

@@ -1,5 +1,6 @@
 package no.nav.hjelpemidler.oppgave.listener.oppgave
 
+import no.nav.hjelpemidler.domain.enhet.Enhetsnummer
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -10,8 +11,8 @@ fun lagInnkommendeOppgaveEvent(oppgaveId: Long = 1): InnkommendeOppgaveEvent =
             tidspunkt = LocalDateTime.of(2024, 9, 20, 10, 0, 0),
         ),
         utførtAv = UtførtAv(
-            navIdent = "Z999999",
-            enhetsnummer = "9999",
+            ident = "Z999999",
+            enhetsnummer = Enhetsnummer("9999"),
         ),
         Oppgave(
             oppgaveId = oppgaveId.toString(),

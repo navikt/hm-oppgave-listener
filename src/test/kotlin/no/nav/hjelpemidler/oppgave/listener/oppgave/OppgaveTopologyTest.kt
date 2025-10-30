@@ -4,6 +4,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Job
+import no.nav.hjelpemidler.domain.enhet.Enhetsnummer
 import no.nav.hjelpemidler.oppgave.listener.Configuration
 import no.nav.hjelpemidler.oppgave.listener.test.asSequence
 import no.nav.hjelpemidler.oppgave.listener.test.testTopology
@@ -46,8 +47,8 @@ class OppgaveTopologyTest {
                     tidspunkt = LocalDateTime.of(2024, 9, 20, 10, 0, 0),
                 ),
                 utførtAv = UtførtAv(
-                    navIdent = "Z999999",
-                    enhetsnummer = "9999",
+                    ident = "Z999999",
+                    enhetsnummer = Enhetsnummer("9999"),
                 ),
                 Oppgave(
                     oppgaveId = oppgaveId.toString(),
