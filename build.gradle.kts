@@ -8,8 +8,10 @@ dependencies {
     // hotlibs
     implementation(platform(libs.hotlibs.platform))
     implementation(libs.hotlibs.streams)
-    implementation(libs.valkey)
+    implementation(libs.kotlinx.coroutines.reactor)
+    implementation(libs.ktor.server.di)
     implementation(libs.ktor.server.sse)
+    implementation(libs.lettuce)
 }
 
 java { toolchain { languageVersion.set(JavaLanguageVersion.of(21)) } }
