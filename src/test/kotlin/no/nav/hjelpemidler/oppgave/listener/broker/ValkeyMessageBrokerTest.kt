@@ -8,11 +8,11 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import kotlin.test.Ignore
 
+@Ignore
 class ValkeyMessageBrokerTest {
     private val broker: MessageBroker = ValkeyMessageBroker("broker")
 
     @Test
-    @Ignore
     fun `Tester ut publish og subscribe`() = runTest {
         val publishJob = launch(Dispatchers.Default) {
         }
