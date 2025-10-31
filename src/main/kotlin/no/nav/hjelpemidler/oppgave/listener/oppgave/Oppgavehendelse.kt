@@ -18,12 +18,12 @@ data class Hendelse(
 
 data class UtførtAv(
     /**
-     * NavIdent eller system.
+     * Nav-ident eller systemnavn.
      *
      * e.g. "A123456" eller "hm-oppgave-sink"
      */
     @param:JsonAlias("navIdent")
-    val ident: String,
+    val id: String,
     @param:JsonAlias("enhetsnr")
     val enhetsnummer: Enhetsnummer?,
     @field:JsonAnyGetter

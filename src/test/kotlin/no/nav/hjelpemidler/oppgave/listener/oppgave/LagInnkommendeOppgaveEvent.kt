@@ -11,7 +11,7 @@ fun lagInnkommendeOppgaveEvent(oppgaveId: Long = 1): InnkommendeOppgaveEvent =
             tidspunkt = LocalDateTime.of(2024, 9, 20, 10, 0, 0),
         ),
         utførtAv = UtførtAv(
-            ident = "Z999999",
+            id = "Z999999",
             enhetsnummer = Enhetsnummer("9999"),
         ),
         Oppgave(

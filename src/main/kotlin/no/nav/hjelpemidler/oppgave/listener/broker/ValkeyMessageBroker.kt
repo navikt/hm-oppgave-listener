@@ -14,6 +14,7 @@ import no.nav.hjelpemidler.configuration.ValkeyConfiguration
 import java.lang.AutoCloseable
 
 interface MessageBroker : Closeable {
+    suspend fun publish(eventName: String, message: String)
     suspend fun subscribe(eventName: String): Flow<ServerSentEvent>
 }
 
@@ -25,6 +26,10 @@ class ValkeyMessageBroker private constructor(private val client: RedisClient) :
     constructor(instanceName: String) : this(ValkeyConfiguration(instanceName))
 
     private val commands = client.connectPubSub().reactive()
+
+    override suspend fun publish(eventName: String, message: String) {
+        commands.publish(eventName, message).awaitSingleOrNull()
+    }
 
     override suspend fun subscribe(eventName: String): Flow<ServerSentEvent> {
         commands.subscribe(eventName).awaitSingleOrNull()
