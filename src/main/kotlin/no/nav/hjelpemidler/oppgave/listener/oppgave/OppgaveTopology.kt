@@ -20,6 +20,8 @@ fun StreamsBuilder.oppgavehendelse() = this
     .peek { key, oppgaveEvent ->
         if (Environment.current.isDev) {
             log.debug { "Mottok oppgavehendelse: $oppgaveEvent, key: $key" }
+        } else {
+            log.info { "Mottok oppgavehendelse, oppgaveId: ${oppgaveEvent.oppgave.oppgaveId}, hendelsestype: ${oppgaveEvent.hendelse.hendelsestype}, key: $key" }
         }
     }
     .selectKey { oppgaveId, _ -> oppgaveId.toString() }

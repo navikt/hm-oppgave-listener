@@ -1,9 +1,7 @@
 package no.nav.hjelpemidler.oppgave.listener
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.ktor.events.EventHandler
 import io.ktor.server.application.Application
-import io.ktor.server.application.ApplicationStopping
 import io.ktor.server.application.install
 import io.ktor.server.plugins.di.DI
 import io.ktor.server.plugins.di.dependencies
@@ -16,7 +14,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import no.nav.hjelpemidler.kafka.createKafkaConsumer
 import no.nav.hjelpemidler.oppgave.listener.broker.MessageBroker
-import no.nav.hjelpemidler.oppgave.listener.broker.ValkeyMessageBroker
+import no.nav.hjelpemidler.oppgave.listener.broker.NoOpMessageBroker
 import no.nav.hjelpemidler.oppgave.listener.oppgave.UtgåendeOppgaveEvent
 import no.nav.hjelpemidler.oppgave.listener.oppgave.UtgåendeOppgaveServerSentEvent
 import no.nav.hjelpemidler.oppgave.listener.oppgave.asFlow
@@ -43,56 +41,54 @@ fun main() {
             install(DI)
             install(SSE)
 
+            // kafkaConsumer()
+
             dependencies {
-                provide<MessageBroker> { ValkeyMessageBroker(instanceName = "broker") }
+                // provide<MessageBroker> { ValkeyMessageBroker(instanceName = "broker") }
+                provide<MessageBroker> { NoOpMessageBroker() }
             }
 
             val broker: MessageBroker by dependencies
-
-            val consumerJob = launch {
-                val consumer = createKafkaConsumer {
-                    put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
-                    put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true)
-                    put(ConsumerConfig.GROUP_ID_CONFIG, "hm-oppgave-listener-sse-v1")
-                }
-                consumer.subscribe(setOf("teamdigihot.hm-soknadsbehandling-v1"))
-                consumer.asFlow()
-                    .mapNotNull {
-                        try {
-                            jsonToTree(it.value())
-                        } catch (_: Exception) {
-                            null
-                        }
-                    }
-                    .filter { it["eventName"]?.textValue() == UtgåendeOppgaveEvent.EVENT_NAME }
-                    .mapNotNull {
-                        try {
-                            treeToValue<UtgåendeOppgaveEvent>(it)
-                        } catch (_: Exception) {
-                            null
-                        }
-                    }
-                    .collect {
-                        val message = valueToJson(UtgåendeOppgaveServerSentEvent(it))
-                        broker.publish(UtgåendeOppgaveEvent.EVENT_NAME, message)
-                    }
-            }
-
-            var stopping: EventHandler<Application> = {}
-            stopping = { _ ->
-                consumerJob.cancel()
-                monitor.unsubscribe(ApplicationStopping, stopping)
-            }
-            monitor.subscribe(ApplicationStopping, stopping)
-
             routing {
                 sse("/events") {
                     heartbeat { period = 10.seconds }
                     broker
                         .subscribe(UtgåendeOppgaveEvent.EVENT_NAME)
-                        .collect { send(it) }
+                        .collect(::send)
                 }
             }
         }
     }.start(wait = true)
+}
+
+fun Application.kafkaConsumer() {
+    val broker: MessageBroker by dependencies
+    launch {
+        val consumer = createKafkaConsumer {
+            put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
+            put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true)
+            put(ConsumerConfig.GROUP_ID_CONFIG, "hm-oppgave-listener-sse-v1")
+        }
+        consumer.subscribe(setOf("teamdigihot.hm-soknadsbehandling-v1"))
+        consumer.asFlow()
+            .mapNotNull {
+                try {
+                    jsonToTree(it.value())
+                } catch (_: Exception) {
+                    null
+                }
+            }
+            .filter { it["eventName"]?.textValue() == UtgåendeOppgaveEvent.EVENT_NAME }
+            .mapNotNull {
+                try {
+                    treeToValue<UtgåendeOppgaveEvent>(it)
+                } catch (_: Exception) {
+                    null
+                }
+            }
+            .collect {
+                val message = valueToJson(UtgåendeOppgaveServerSentEvent(it))
+                broker.publish(UtgåendeOppgaveEvent.EVENT_NAME, message)
+            }
+    }
 }
