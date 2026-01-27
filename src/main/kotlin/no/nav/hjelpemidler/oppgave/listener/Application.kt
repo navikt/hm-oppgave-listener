@@ -15,8 +15,8 @@ import kotlinx.coroutines.launch
 import no.nav.hjelpemidler.kafka.createKafkaConsumer
 import no.nav.hjelpemidler.oppgave.listener.broker.MessageBroker
 import no.nav.hjelpemidler.oppgave.listener.broker.NoOpMessageBroker
-import no.nav.hjelpemidler.oppgave.listener.oppgave.UtgåendeOppgaveEvent
-import no.nav.hjelpemidler.oppgave.listener.oppgave.UtgåendeOppgaveServerSentEvent
+import no.nav.hjelpemidler.oppgave.listener.oppgave.InternOppgavehendelse
+import no.nav.hjelpemidler.oppgave.listener.oppgave.InternOppgavehendelseSSE
 import no.nav.hjelpemidler.oppgave.listener.oppgave.asFlow
 import no.nav.hjelpemidler.oppgave.listener.oppgave.oppgavehendelse
 import no.nav.hjelpemidler.serialization.jackson.jsonToTree
@@ -53,7 +53,7 @@ fun main() {
                 sse("/events") {
                     heartbeat { period = 10.seconds }
                     broker
-                        .subscribe(UtgåendeOppgaveEvent.EVENT_NAME)
+                        .subscribe(InternOppgavehendelse.EVENT_NAME)
                         .collect(::send)
                 }
             }
@@ -78,17 +78,17 @@ fun Application.kafkaConsumer() {
                     null
                 }
             }
-            .filter { it["eventName"]?.textValue() == UtgåendeOppgaveEvent.EVENT_NAME }
+            .filter { it["eventName"]?.textValue() == InternOppgavehendelse.EVENT_NAME }
             .mapNotNull {
                 try {
-                    treeToValue<UtgåendeOppgaveEvent>(it)
+                    treeToValue<InternOppgavehendelse>(it)
                 } catch (_: Exception) {
                     null
                 }
             }
             .collect {
-                val message = valueToJson(UtgåendeOppgaveServerSentEvent(it))
-                broker.publish(UtgåendeOppgaveEvent.EVENT_NAME, message)
+                val message = valueToJson(InternOppgavehendelseSSE(it))
+                broker.publish(InternOppgavehendelse.EVENT_NAME, message)
             }
     }
 }

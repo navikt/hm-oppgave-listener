@@ -2,6 +2,7 @@ package no.nav.hjelpemidler.oppgave.listener.oppgave
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import no.nav.hjelpemidler.configuration.Environment
+import no.nav.hjelpemidler.oppgave.hendelse.EksternOppgavehendelse
 import no.nav.hjelpemidler.oppgave.listener.Configuration
 import no.nav.hjelpemidler.streams.serialization.jsonSerde
 import no.nav.hjelpemidler.streams.serialization.serde
@@ -14,9 +15,9 @@ private val log = KotlinLogging.logger {}
 fun StreamsBuilder.oppgavehendelse() = this
     .stream(
         Configuration.OPPGAVE_TOPIC,
-        Consumed.with(serde<Long>(), jsonSerde<InnkommendeOppgaveEvent>())
+        Consumed.with(serde<Long>(), jsonSerde<EksternOppgavehendelse>())
     )
-    .filter { _, oppgaveEvent -> oppgaveEvent.oppgave.harTemaHjelpemidler }
+    .filter { _, oppgaveEvent -> oppgaveEvent.oppgave.kategorisering.run { isTemaHjelpemidler && isOppgavetypeHotsak } }
     .peek { key, oppgaveEvent ->
         if (Environment.current.isDev) {
             log.debug { "Mottok oppgavehendelse: $oppgaveEvent, key: $key" }
@@ -25,5 +26,5 @@ fun StreamsBuilder.oppgavehendelse() = this
         }
     }
     .selectKey { oppgaveId, _ -> oppgaveId.toString() }
-    .mapValues(::UtgåendeOppgaveEvent)
-    .toRapid<String, UtgåendeOppgaveEvent>()
+    .mapValues(::InternOppgavehendelse)
+    .toRapid<String, InternOppgavehendelse>()

@@ -7,6 +7,7 @@ plugins {
 dependencies {
     // hotlibs
     implementation(platform(libs.hotlibs.platform))
+    implementation(libs.hotlibs.oppgave)
     implementation(libs.hotlibs.streams)
     implementation(libs.kotlinx.coroutines.reactor)
     implementation(libs.ktor.server.di)
