@@ -20,4 +20,5 @@ jobs:
     uses: navikt/hm-workflows/.github/workflows/deploy-dev.yaml@main
     with:
       manifest: .nais/nais-dev.yaml
+      salsa: false
     secrets: inherit
