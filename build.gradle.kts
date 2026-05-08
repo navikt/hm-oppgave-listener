@@ -12,10 +12,20 @@ dependencies {
     implementation(libs.kotlinx.coroutines.reactor)
     implementation(libs.ktor.server.di)
     implementation(libs.ktor.server.sse)
-    implementation(libs.lettuce)
+    implementation(libs.lettuce.core)
 }
 
-java { toolchain { languageVersion.set(JavaLanguageVersion.of(21)) } }
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(25))
+    }
+}
+
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
+    }
+}
 
 @Suppress("UnstableApiUsage")
 testing {

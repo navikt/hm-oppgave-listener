@@ -20,6 +20,7 @@ import no.nav.hjelpemidler.oppgave.listener.oppgave.InternOppgavehendelseSSE
 import no.nav.hjelpemidler.oppgave.listener.oppgave.asFlow
 import no.nav.hjelpemidler.oppgave.listener.oppgave.oppgavehendelse
 import no.nav.hjelpemidler.serialization.jackson.jsonToTree
+import no.nav.hjelpemidler.serialization.jackson.stringValueOrNull
 import no.nav.hjelpemidler.serialization.jackson.treeToValue
 import no.nav.hjelpemidler.serialization.jackson.valueToJson
 import no.nav.hjelpemidler.streams.kafkaStreamsApplication
@@ -78,7 +79,7 @@ fun Application.kafkaConsumer() {
                     null
                 }
             }
-            .filter { it["eventName"]?.textValue() == InternOppgavehendelse.EVENT_NAME }
+            .filter { it["eventName"]?.stringValueOrNull() == InternOppgavehendelse.EVENT_NAME }
             .mapNotNull {
                 try {
                     treeToValue<InternOppgavehendelse>(it)

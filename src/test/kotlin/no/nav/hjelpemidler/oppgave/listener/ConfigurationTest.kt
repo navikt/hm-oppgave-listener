@@ -1,14 +1,11 @@
 package no.nav.hjelpemidler.oppgave.listener
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
-import com.fasterxml.jackson.module.kotlin.kotlinModule
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.io.FileTemplateLoader
 import io.kotest.matchers.collections.shouldContainAll
 import no.nav.hjelpemidler.configuration.environmentVariablesIn
+import tools.jackson.dataformat.yaml.YAMLMapper
+import tools.jackson.module.kotlin.kotlinModule
 import kotlin.test.Test
 
 class ConfigurationTest {
@@ -25,9 +22,9 @@ class ConfigurationTest {
 
     private fun environmentVariablesIn(location: String): List<String> {
         val manifest = handlebars.compile(location).apply(mapOf("image" to "test"))
-        return mapper.readValue<JsonNode>(manifest)
+        return mapper.readTree(manifest)
             .at("/spec/env")
-            .map { it["name"].textValue() }
+            .mapTo(mutableListOf()) { it["name"].stringValue() }
             .sorted()
     }
 }
@@ -39,6 +36,6 @@ private val handlebars: Handlebars by lazy {
 private val mapper: YAMLMapper by lazy {
     YAMLMapper.builder()
         .addModule(kotlinModule())
-        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+        // .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         .build()
 }
