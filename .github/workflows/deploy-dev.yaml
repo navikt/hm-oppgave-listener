@@ -21,5 +21,4 @@ jobs:
     with:
       java-version: '25'
       manifest: .nais/nais-dev.yaml
-      salsa: false
     secrets: inherit
