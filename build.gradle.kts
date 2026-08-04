@@ -17,7 +17,7 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(25))
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -30,8 +30,9 @@ kotlin {
 @Suppress("UnstableApiUsage")
 testing {
     suites {
-        val test by getting(JvmTestSuite::class) {
-            useKotlinTest(libs.versions.kotlin.asProvider())
+        @Suppress("UnstableApiUsage")
+        val test = named<JvmTestSuite>("test") {
+            useJUnitJupiter(libs.versions.junit)
             dependencies {
                 implementation(libs.hotlibs.test)
 
@@ -45,4 +46,4 @@ testing {
     }
 }
 
-application { mainClass.set("no.nav.hjelpemidler.oppgave.listener.ApplicationKt") }
+application { mainClass = "no.nav.hjelpemidler.oppgave.listener.ApplicationKt" }

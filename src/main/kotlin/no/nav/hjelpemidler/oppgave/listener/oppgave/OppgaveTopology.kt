@@ -1,6 +1,5 @@
 package no.nav.hjelpemidler.oppgave.listener.oppgave
 
-import com.fasterxml.jackson.databind.JsonMappingException
 import io.github.oshai.kotlinlogging.KotlinLogging
 import no.nav.hjelpemidler.configuration.Environment
 import no.nav.hjelpemidler.oppgave.hendelse.EksternOppgavehendelse
@@ -13,6 +12,7 @@ import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.kstream.Consumed
+import tools.jackson.databind.DatabindException
 
 private val log = KotlinLogging.logger {}
 
@@ -44,7 +44,7 @@ object EksternOppgavehendelseSerde : Serde<EksternOppgavehendelse?> {
         try {
             deserializer.deserialize(topic, data)
         } catch (e: Exception) {
-            if (Environment.current.isDev && e is JsonMappingException) {
+            if (Environment.current.isDev && e is DatabindException) {
                 log.warn(e) { "Hopper over oppgavehendelse med ugyldig JSON, data: '${data.toString(Charsets.UTF_8)}'" }
                 null
             } else {

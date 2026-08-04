@@ -2,7 +2,6 @@ package no.nav.hjelpemidler.oppgave.listener.broker
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.sse.ServerSentEvent
-import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import io.lettuce.core.RedisClient
 import io.lettuce.core.RedisURI
 import io.lettuce.core.StaticCredentialsProvider
@@ -13,20 +12,20 @@ import no.nav.hjelpemidler.configuration.ValkeyConfiguration
 
 private val log = KotlinLogging.logger {}
 
-@OptIn(ExperimentalLettuceCoroutinesApi::class)
 class ValkeyMessageBroker private constructor(private val client: RedisClient) : MessageBroker {
     constructor(configuration: ValkeyConfiguration) : this(RedisClient.create(configuration.redisURI))
     constructor(instanceName: String) : this(ValkeyConfiguration(instanceName))
 
-    private val commands = client.connectPubSub().reactive()
+    private val pubCommands = client.connect().reactive()
+    private val subCommands = client.connectPubSub().reactive()
 
     override suspend fun publish(eventName: String, message: String) {
-        commands.publish(eventName, message).awaitSingleOrNull()
+        pubCommands.publish(eventName, message).awaitSingleOrNull()
     }
 
     override suspend fun subscribe(eventName: String): Flow<ServerSentEvent> {
-        commands.subscribe(eventName).awaitSingleOrNull()
-        return commands.observeChannels()
+        subCommands.subscribe(eventName).awaitSingleOrNull()
+        return subCommands.observeChannels()
             .filter { it.channel == eventName }
             .map { ServerSentEvent(it.message, it.channel) }
             .asFlow()
