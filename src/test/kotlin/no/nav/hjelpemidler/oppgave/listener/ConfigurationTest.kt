@@ -4,9 +4,9 @@ import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.io.FileTemplateLoader
 import io.kotest.matchers.collections.shouldContainAll
 import no.nav.hjelpemidler.configuration.environmentVariablesIn
+import org.junit.jupiter.api.Test
 import tools.jackson.dataformat.yaml.YAMLMapper
 import tools.jackson.module.kotlin.kotlinModule
-import kotlin.test.Test
 
 class ConfigurationTest {
     @Test
@@ -18,7 +18,6 @@ class ConfigurationTest {
     fun `Har definert miljøvariabler for prod`() {
         environmentVariablesIn("nais-prod") shouldContainAll environmentVariablesIn(Configuration)
     }
-
 
     private fun environmentVariablesIn(location: String): List<String> {
         val manifest = handlebars.compile(location).apply(mapOf("image" to "test"))

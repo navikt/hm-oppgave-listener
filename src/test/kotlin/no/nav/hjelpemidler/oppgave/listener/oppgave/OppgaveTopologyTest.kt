@@ -7,7 +7,7 @@ import no.nav.hjelpemidler.oppgave.listener.test.asSequence
 import no.nav.hjelpemidler.oppgave.listener.test.testTopology
 import no.nav.hjelpemidler.streams.serialization.jsonSerde
 import no.nav.hjelpemidler.streams.serialization.serde
-import kotlin.test.Test
+import org.junit.jupiter.api.Test
 
 class OppgaveTopologyTest {
     private val eksternOppgavehendelseSerde = jsonSerde<EksternOppgavehendelse>()
