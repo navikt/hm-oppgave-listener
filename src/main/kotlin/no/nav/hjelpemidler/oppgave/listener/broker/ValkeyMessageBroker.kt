@@ -4,7 +4,6 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.sse.ServerSentEvent
 import io.lettuce.core.RedisClient
 import io.lettuce.core.RedisURI
-import io.lettuce.core.StaticCredentialsProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactor.awaitSingleOrNull
@@ -14,7 +13,7 @@ private val log = KotlinLogging.logger {}
 
 class ValkeyMessageBroker private constructor(private val client: RedisClient) : MessageBroker {
     constructor(configuration: ValkeyConfiguration) : this(RedisClient.create(configuration.redisURI))
-    constructor(instanceName: String) : this(ValkeyConfiguration(instanceName))
+    constructor(instanceName: String) : this(ValkeyConfiguration(instanceName, ValkeyConfiguration.Provider.VALKEY))
 
     private val pubCommands = client.connect().reactive()
     private val subCommands = client.connectPubSub().reactive()
@@ -38,9 +37,4 @@ class ValkeyMessageBroker private constructor(private val client: RedisClient) :
 }
 
 private val ValkeyConfiguration.redisURI: RedisURI
-    get() = RedisURI.builder()
-        .withHost(host)
-        .withPort(port)
-        .withSsl(tls)
-        .withAuthentication(StaticCredentialsProvider(username, password?.toCharArray()))
-        .build()
+    get() = TODO()
