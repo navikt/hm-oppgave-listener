@@ -26,9 +26,6 @@ spec:
       enabled: true
   kafka:
     pool: nav-prod
-  valkey:
-    - instance: broker
-      access: readwrite
   resources:
     limits:
       cpu: 500m

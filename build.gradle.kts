@@ -9,13 +9,6 @@ dependencies {
     implementation(platform(libs.hotlibs.platform))
     implementation(libs.hotlibs.oppgave)
     implementation(libs.hotlibs.streams)
-
-    implementation(libs.kotlinx.coroutines.reactor)
-
-    implementation(libs.ktor.server.di)
-    implementation(libs.ktor.server.sse)
-
-    implementation(libs.lettuce.core)
 }
 
 java {
