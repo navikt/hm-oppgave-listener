@@ -14,8 +14,8 @@ data class InternOppgavehendelse(
     val hendelse: Hendelse,
     val utførtAv: UtførtAv,
     val oppgave: Oppgave,
-    val opprettet: Instant = Instant.now(),
     override val eventId: UUID = UUID.randomUUID(),
+    override val opprettet: Instant = Instant.now(),
 ) : KafkaMessage {
     constructor(oppgavehendelse: EksternOppgavehendelse) : this(
         hendelse = oppgavehendelse.hendelse,
